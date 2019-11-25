@@ -33,14 +33,26 @@ func RegisterForm(ctx *gin.Context) {
 	})
 }
 
-func Category(ctx *gin.Context)  {
+func Category(ctx *gin.Context) {
 	username := ctx.Param("username")
 	ctx.String(http.StatusOK, "Hello %s", username)
 }
 
 //from database
-func ShowUser(ctx *gin.Context)  {
+func ShowUser(ctx *gin.Context) {
 	var user []model.User
-	err := model.DB.Find
+	err := model.DB.Find(&user).Error
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  http.StatusInternalServerError,
+			"message": "Gagal",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"status": http.StatusOK,
+		"data":   user,
+	})
 
 }
