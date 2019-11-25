@@ -42,6 +42,7 @@ func Category(ctx *gin.Context) {
 func ShowUser(ctx *gin.Context) {
 	var user []model.User
 	err := model.DB.Find(&user).Error
+
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  http.StatusInternalServerError,
@@ -55,4 +56,42 @@ func ShowUser(ctx *gin.Context) {
 		"data":   user,
 	})
 
+}
+
+func ShowPosting(ctx *gin.Context) {
+	var posting []model.PostItem
+	err := model.DB.Find(&posting).Error
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  http.StatusInternalServerError,
+			"message": "Gagal",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"status": http.StatusOK,
+		"data":   posting,
+	})
+}
+
+//function with where
+func ShowDetailUser(ctx *gin.Context) {
+	id := ctx.Query("username")
+	var user model.User
+	err := model.DB.Where("username = ?", id).First(&user).Error
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  http.StatusInternalServerError,
+			"message": "Gagal",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"status": http.StatusOK,
+		"data":   user,
+	})
 }
